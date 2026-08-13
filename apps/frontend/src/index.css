@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  font-family: Manrope, sans-serif;
+}
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-white text-gray-900 dark:bg-gray-900 dark:text-white;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-4 py-2 bg-vom-orange text-white rounded-lg font-semibold hover:bg-orange-600 transition-colors;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-gray-200 text-gray-900 rounded-lg font-semibold hover:bg-gray-300 transition-colors dark:bg-gray-700 dark:text-white;
+  }
+
+  .card {
+    @apply bg-white rounded-lg border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  .badge-danger {
+    @apply badge bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300;
+  }
+
+  .badge-warning {
+    @apply badge bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300;
+  }
+
+  .badge-success {
+    @apply badge bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300;
+  }
+}

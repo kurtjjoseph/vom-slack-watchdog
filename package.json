@@ -1,0 +1,19 @@
+{
+  "name": "vom-slack-watchdog",
+  "version": "1.0.0",
+  "description": "VOM Slack Watchdog - Real-time duplicate work detection and anomaly monitoring",
+  "private": true,
+  "workspaces": [
+    "apps/frontend",
+    "apps/backend"
+  ],
+  "scripts": {
+    "dev": "npm run -w apps/backend dev & npm run -w apps/frontend dev",
+    "build": "npm run -w apps/frontend build && npm run -w apps/backend build",
+    "test": "npm run -w apps/backend test",
+    "lint": "npm run -w apps/frontend lint && npm run -w apps/backend lint"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
