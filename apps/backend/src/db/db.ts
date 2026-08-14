@@ -113,8 +113,11 @@ async function runMigrations(pool: pkg.Pool) {
 }
 
 export async function getDatabase(): Promise<pkg.Pool> {
+  // On serverless there is no startup hook to call initializeDatabase(), so
+  // the first caller in a cold container initializes it. initializeDatabase()
+  // returns the existing pool if one is already open.
   if (!pool) {
-    throw new Error('Database not initialized');
+    return initializeDatabase();
   }
   return pool;
 }
