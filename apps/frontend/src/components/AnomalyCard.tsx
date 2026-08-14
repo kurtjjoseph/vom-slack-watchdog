@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { AlertCircle, TrendingUp, Copy, Flag, FlagOff } from 'lucide-react';
+import { TrendingUp, Copy, Flag, FlagOff } from 'lucide-react';
 import { useState } from 'react';
 import { api } from '../services/api';
 

@@ -12,6 +12,7 @@ router.get('/anomalies', async (req: AuthRequest, res: Response) => {
   try {
     const { limit = 50, offset = 0, type, flagged } = req.query;
     const workspaceId = req.workspaceId;
+    if (!workspaceId) return res.status(401).json({ error: 'Unauthorized' });
 
     const db = await getDatabase();
     let query = 'SELECT * FROM anomalies WHERE workspace_id = $1';
@@ -51,6 +52,7 @@ router.get('/anomalies/:id', async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
     const workspaceId = req.workspaceId;
+    if (!workspaceId) return res.status(401).json({ error: 'Unauthorized' });
 
     const db = await getDatabase();
     const result = await db.query(
@@ -75,6 +77,7 @@ router.patch('/anomalies/:id', async (req: AuthRequest, res: Response) => {
     const { id } = req.params;
     const { flagged, feedback } = req.body;
     const workspaceId = req.workspaceId;
+    if (!workspaceId) return res.status(401).json({ error: 'Unauthorized' });
 
     const db = await getDatabase();
 
@@ -123,6 +126,7 @@ router.get('/stats/anomalies', async (req: AuthRequest, res: Response) => {
   try {
     const { days = 7 } = req.query;
     const workspaceId = req.workspaceId;
+    if (!workspaceId) return res.status(401).json({ error: 'Unauthorized' });
 
     const db = await getDatabase();
 
@@ -167,6 +171,7 @@ router.get('/patterns/:channel', async (req: AuthRequest, res: Response) => {
   try {
     const { channel } = req.params;
     const workspaceId = req.workspaceId;
+    if (!workspaceId) return res.status(401).json({ error: 'Unauthorized' });
 
     const db = await getDatabase();
 
@@ -196,6 +201,7 @@ router.get('/patterns/:channel', async (req: AuthRequest, res: Response) => {
 router.get('/channels/stats', async (req: AuthRequest, res: Response) => {
   try {
     const workspaceId = req.workspaceId;
+    if (!workspaceId) return res.status(401).json({ error: 'Unauthorized' });
     const db = await getDatabase();
 
     const result = await db.query(
