@@ -3,19 +3,8 @@
   "buildCommand": "npm run build",
   "outputDirectory": "apps/frontend/dist",
   "env": {
-    "ANTHROPIC_API_KEY": "@anthropic_api_key",
-    "DATABASE_URL": "@database_url",
-    "SLACK_BOT_TOKEN": "@slack_bot_token",
-    "SLACK_APP_TOKEN": "@slack_app_token",
-    "SLACK_SIGNING_SECRET": "@slack_signing_secret",
-    "SLACK_CLIENT_ID": "@slack_client_id",
-    "SLACK_CLIENT_SECRET": "@slack_client_secret",
-    "SLACK_REDIRECT_URI": "@slack_redirect_uri",
-    "JWT_SECRET": "@jwt_secret",
-    "SENTRY_DSN": "@sentry_dsn",
     "NODE_ENV": "production",
     "VITE_API_URL": "https://vom-slack-watchdog.vercel.app/api",
-    "VITE_SLACK_CLIENT_ID": "@slack_client_id",
     "VITE_SLACK_REDIRECT_URI": "https://vom-slack-watchdog.vercel.app/slack/callback"
   },
   "functions": {
