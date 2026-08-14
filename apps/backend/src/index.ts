@@ -2,7 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import * as Sentry from '@sentry/node';
 import dotenv from 'dotenv';
-import { initializeSlackBot } from './services/slack.js';
+import { initializeSlackBot, slackReceiver } from './services/slack.js';
 import { initializeDatabase } from './db/db.js';
 import { authMiddleware } from './middleware/auth.js';
 import { errorHandler } from './middleware/errorHandler.js';
@@ -23,6 +23,11 @@ if (process.env.SENTRY_DSN) {
   app.use(Sentry.Handlers.requestHandler());
   app.use(Sentry.Handlers.errorHandler());
 }
+
+// Slack's event POSTs must reach the receiver before express.json() runs —
+// signature verification needs the unparsed body.
+initializeSlackBot();
+app.use(slackReceiver.router);
 
 // Middleware
 app.use(cors());
@@ -80,19 +85,19 @@ app.use('/api', authMiddleware, apiRoutes);
 // Error handling
 app.use(errorHandler);
 
-// Start server
-async function start() {
-  try {
-    await initializeDatabase();
-    await initializeSlackBot();
-
-    app.listen(PORT, () => {
-      console.log(`VOM Slack Watchdog running on port ${PORT}`);
+// On Vercel the platform owns the listener and imports this module; bind a
+// port only when the file is run directly (local dev, container host).
+if (!process.env.VERCEL) {
+  initializeDatabase()
+    .then(() => {
+      app.listen(PORT, () => {
+        console.log(`VOM Slack Watchdog running on port ${PORT}`);
+      });
+    })
+    .catch((error) => {
+      console.error('Failed to start server:', error);
+      process.exit(1);
     });
-  } catch (error) {
-    console.error('Failed to start server:', error);
-    process.exit(1);
-  }
 }
 
-start();
+export default app;

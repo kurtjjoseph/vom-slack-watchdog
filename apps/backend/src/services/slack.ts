@@ -1,4 +1,4 @@
-import { App, BlockAction, SlashCommand } from '@slack/bolt';
+import { App, ExpressReceiver, SlashCommand } from '@slack/bolt';
 import { WebClient } from '@slack/web-api';
 import dotenv from 'dotenv';
 import { randomUUID } from 'crypto';
@@ -9,14 +9,33 @@ import { detectAnomalies } from './anomaly.js';
 dotenv.config();
 
 let slackApp: App;
-const slackWebClient = new WebClient();
 
-export async function initializeSlackBot() {
+// Socket Mode holds a WebSocket open for the process lifetime, which a
+// serverless function cannot do. ExpressReceiver instead takes Slack's HTTP
+// event POSTs (verified against the signing secret) on a route we mount on
+// the main Express app, so each event is an ordinary short-lived request.
+export const slackReceiver = new ExpressReceiver({
+  signingSecret: process.env.SLACK_SIGNING_SECRET || '',
+  endpoints: { events: '/slack/events' },
+  // The outer app already parsed the body; Bolt needs the raw bytes to verify
+  // the signature, so let the receiver do its own parsing.
+  processBeforeResponse: true,
+});
+
+export function initializeSlackBot() {
+  // Bolt's App constructor throws without a bot token. Until the Slack app is
+  // configured, skip wiring the listeners so the rest of the API (health,
+  // dashboard routes) still boots instead of failing at cold start.
+  if (!process.env.SLACK_BOT_TOKEN || !process.env.SLACK_SIGNING_SECRET) {
+    console.warn(
+      'SLACK_BOT_TOKEN/SLACK_SIGNING_SECRET not set — Slack listeners disabled.'
+    );
+    return;
+  }
+
   slackApp = new App({
     token: process.env.SLACK_BOT_TOKEN,
-    signingSecret: process.env.SLACK_SIGNING_SECRET,
-    socketMode: true,
-    appToken: process.env.SLACK_APP_TOKEN,
+    receiver: slackReceiver,
   });
 
   // Listen for messages in monitored channels
@@ -40,9 +59,9 @@ export async function initializeSlackBot() {
     await handleFeedbackCommand(command, respond);
   });
 
-  // Start the app
-  await slackApp.start();
-  console.log('Slack bot initialized');
+  // No .start() — the receiver's router is mounted on the Express app, which
+  // is what actually listens (or is invoked, on serverless).
+  console.log('Slack bot initialized (HTTP events mode)');
 }
 
 async function getChannelName(client: WebClient, channelId: string): Promise<string> {
