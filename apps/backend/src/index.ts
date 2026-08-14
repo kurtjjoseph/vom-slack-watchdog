@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import * as Sentry from 'sentry-node';
+import * as Sentry from '@sentry/node';
 import dotenv from 'dotenv';
 import { initializeSlackBot } from './services/slack.js';
 import { initializeDatabase } from './db/db.js';

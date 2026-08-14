@@ -7,11 +7,6 @@
     "VITE_API_URL": "https://vom-slack-watchdog.vercel.app/api",
     "VITE_SLACK_REDIRECT_URI": "https://vom-slack-watchdog.vercel.app/slack/callback"
   },
-  "functions": {
-    "apps/backend/src/**/*.ts": {
-      "runtime": "nodejs20.x"
-    }
-  },
   "rewrites": [
     {
       "source": "/api/(.*)",

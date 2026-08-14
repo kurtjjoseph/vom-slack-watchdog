@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import * as Sentry from 'sentry-node';
+import * as Sentry from '@sentry/node';
 
 export interface ApiError extends Error {
   statusCode?: number;
