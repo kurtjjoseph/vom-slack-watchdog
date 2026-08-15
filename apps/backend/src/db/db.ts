@@ -37,6 +37,10 @@ export async function initializeDatabase(): Promise<pkg.Pool> {
 }
 
 async function runMigrations(pool: pkg.Pool) {
+  // The messages table stores an embedding vector, which needs pgvector.
+  // Neon ships the extension but does not enable it by default.
+  await pool.query('CREATE EXTENSION IF NOT EXISTS vector');
+
   const migrations = [
     `
       CREATE TABLE IF NOT EXISTS workspace_tokens (
